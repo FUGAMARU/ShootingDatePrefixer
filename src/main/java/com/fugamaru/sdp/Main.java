@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Scanner;
@@ -39,8 +40,14 @@ public class Main {
                 if (fileType == FileType.PICTURE || fileType == FileType.VIDEO) {
                     Optional<Date> shootingDate = ExifUtil.getShootingDate(fileType, path);
                     if (shootingDate.isPresent()) {
-                        System.out.println("CREATION DATE");
-                        System.out.println(shootingDate.get());
+                        String prefix = new SimpleDateFormat("yyyy_MM_dd").format(shootingDate.get());
+                        Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
+
+                        try {
+                            Files.move(path, renamedPath);
+                        } catch (IOException e) {
+                            System.out.println("An error occurred while renaming the file: " + path);
+                        }
                     }
                 }
             });
