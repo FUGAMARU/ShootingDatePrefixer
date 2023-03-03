@@ -1,6 +1,7 @@
 package com.fugamaru.sdp;
 
 import com.fugamaru.sdp.enums.FileType;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,17 +14,20 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 import static java.lang.System.exit;
+import static org.fusesource.jansi.Ansi.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.print("Type the path of the target directory > ");
+        AnsiConsole.systemInstall();
+
+        System.out.print(ansi().fgCyan().a("Type the path of the target directory > ").reset());
 
         Scanner scanner = new Scanner(System.in);
         Path targetDir = Paths.get(scanner.nextLine());
         scanner.close();
 
         if (!Files.isDirectory(targetDir) || Files.notExists(targetDir)) {
-            System.out.println("The specified path is not a directory or does not exist.");
+            System.out.println(ansi().fgBrightRed().a("The specified path is not a directory or does not exist.").reset());
             exit(1);
         }
 
@@ -33,7 +37,7 @@ public class Main {
                 FileType fileType = FileUtil.getFileType(path);
 
                 if (fileType == FileType.OTHER) {
-                    System.out.println("Processing of this file will be skipped: " + path);
+                    System.out.print(ansi().fgBrightCyan().a("Skipped").reset());
                     return;
                 }
 
@@ -45,14 +49,15 @@ public class Main {
 
                         try {
                             Files.move(path, renamedPath);
+                            System.out.print(ansi().a("Renamed -> ").fgBrightGreen().a(renamedPath).reset());
                         } catch (IOException e) {
-                            System.out.println("An error occurred while renaming the file: " + path);
+                            System.out.println(ansi().fgBrightRed().a("Error occurred while renaming").reset());
                         }
                     }
                 }
             });
         } catch (IOException e) {
-            System.out.println("An error occurred while working with the file.");
+            System.out.println(ansi().fgBrightRed().a("Error occurred while working with the file").reset());
         }
     }
 }

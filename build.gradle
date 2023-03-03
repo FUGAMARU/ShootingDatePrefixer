@@ -14,6 +14,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
     implementation 'org.apache.tika:tika-core:2.7.0'
+    implementation 'org.fusesource.jansi:jansi:2.4.0'
 }
 
 test {
