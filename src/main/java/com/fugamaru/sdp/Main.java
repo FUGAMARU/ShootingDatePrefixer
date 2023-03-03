@@ -1,5 +1,7 @@
 package com.fugamaru.sdp;
 
+import com.fugamaru.sdp.enums.FileType;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +25,11 @@ public class Main {
         }
 
         try (Stream<Path> paths = Files.walk(targetDir)) {
-            paths.filter(path -> !Files.isDirectory((path))).forEach(System.out::println);
+            paths.filter(path -> !Files.isDirectory((path))).forEach(path -> {
+                System.out.println(path);
+                FileType fileType = FileUtil.getFileType(path);
+                System.out.println(fileType.name());
+            });
         } catch (IOException e) {
             System.out.println("An error occurred while working with the file");
         }
