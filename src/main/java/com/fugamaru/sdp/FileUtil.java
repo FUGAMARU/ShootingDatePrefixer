@@ -18,8 +18,13 @@ public class FileUtil {
             Tika tika = new Tika();
             String mimeType = tika.detect(path);
 
-            if (mimeType.contains("image/")) return FileType.PICTURE;
-            if (mimeType.contains("video/")) return FileType.VIDEO;
+            if (mimeType.contains("image/")) {
+                return FileType.PICTURE;
+            }
+            
+            if (mimeType.contains("video/")) {
+                return FileType.VIDEO;
+            }
 
             return FileType.OTHER;
         } catch (IOException e) {

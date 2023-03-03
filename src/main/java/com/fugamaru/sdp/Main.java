@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -26,12 +28,24 @@ public class Main {
 
         try (Stream<Path> paths = Files.walk(targetDir)) {
             paths.filter(path -> !Files.isDirectory((path))).forEach(path -> {
-                System.out.println(path);
+                System.out.println("\n" + path);
                 FileType fileType = FileUtil.getFileType(path);
-                System.out.println(fileType.name());
+
+                if (fileType == FileType.OTHER) {
+                    System.out.println("Processing of this file will be skipped: " + path);
+                    return;
+                }
+
+                if (fileType == FileType.PICTURE || fileType == FileType.VIDEO) {
+                    Optional<Date> shootingDate = ExifUtil.getShootingDate(fileType, path);
+                    if (shootingDate.isPresent()) {
+                        System.out.println("CREATION DATE");
+                        System.out.println(shootingDate.get());
+                    }
+                }
             });
         } catch (IOException e) {
-            System.out.println("An error occurred while working with the file");
+            System.out.println("An error occurred while working with the file.");
         }
     }
 }
