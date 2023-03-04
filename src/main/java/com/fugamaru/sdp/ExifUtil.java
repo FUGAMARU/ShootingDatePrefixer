@@ -4,10 +4,13 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
+import com.fugamaru.sdp.enums.FileType;
 import com.fugamaru.sdp.enums.TagType;
 import com.fugamaru.sdp.exceptions.DatetimeReadException;
+import com.fugamaru.sdp.exceptions.UnsupportedFileTypeException;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -20,16 +23,23 @@ public class ExifUtil {
      * @return 撮影日時
      * @throws DatetimeReadException DatetimeReadException
      */
-    public static LocalDate getShootingDate(TargetFile targetFile) throws DatetimeReadException {
-        String exceptionMessage = "No valid metadata existed for the shooting date: " + targetFile.getPath(); //撮影日時に関するメタデーターが存在しない場合に独自例外に投げるメッセージ
+    public static LocalDate getShootingDate(TargetFile targetFile) throws DatetimeReadException, UnsupportedFileTypeException {
+        Path filePath = targetFile.getPath();
+        FileType fileType = targetFile.getFileType();
+
+        String exceptionMessage = "No valid metadata existed for the shooting date: " + filePath; //撮影日時に関するメタデーターが存在しない場合に独自例外に投げるメッセージ
 
         try {
-            Metadata metadata = ImageMetadataReader.readMetadata(targetFile.getPath().toFile());
+            if (fileType == FileType.OTHER) {
+                throw new UnsupportedFileTypeException("Not an picture or video file: " + filePath);
+            }
+
+            Metadata metadata = ImageMetadataReader.readMetadata(filePath.toFile());
 
             List<Directory> dirs = new ArrayList<>();
             metadata.getDirectories().iterator().forEachRemaining(dirs::add);
 
-            switch (targetFile.getFileType()) {
+            switch (fileType) {
                 case PICTURE -> {
                     Optional<Directory> validDir = dirs.stream().filter(dir -> dir.containsTag(TagType.PICTURE_CREATION_DATETIME.getTagType()) || dir.containsTag(TagType.PICTURE_ORIGINAL_CREATION_DATETIME.getTagType())).findFirst();
 
@@ -62,14 +72,12 @@ public class ExifUtil {
 
                     return LocalDate.ofInstant(shootingDate.toInstant(), ZoneId.systemDefault());
                 }
-
-                default -> {
-                    return null;
-                }
             }
         } catch (ImageProcessingException | IOException e) {
             throw new DatetimeReadException(e.getMessage());
         }
+
+        return null;
     }
 
     /**

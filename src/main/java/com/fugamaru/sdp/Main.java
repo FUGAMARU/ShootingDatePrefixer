@@ -1,7 +1,7 @@
 package com.fugamaru.sdp;
 
-import com.fugamaru.sdp.enums.FileType;
 import com.fugamaru.sdp.exceptions.DatetimeReadException;
+import com.fugamaru.sdp.exceptions.UnsupportedFileTypeException;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.IOException;
@@ -36,24 +36,16 @@ public class Main {
                 System.out.println("\n" + path);
                 TargetFile targetFile = new TargetFile(path);
 
-                FileType fileType = targetFile.getFileType();
+                try {
+                    LocalDate shootingDate = ExifUtil.getShootingDate(targetFile);
+                    assert shootingDate != null;
 
-                switch (fileType) {
-                    case PICTURE, VIDEO -> {
-                        try {
-                            LocalDate shootingDate = ExifUtil.getShootingDate(targetFile);
+                    String prefix = shootingDate.format(DateTimeFormatter.ofPattern("yyyy_MM_dd"));
+                    Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
 
-                            assert shootingDate != null;
-                            String prefix = shootingDate.format(DateTimeFormatter.ofPattern("yyyy_MM_dd"));
-                            Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
-
-                            targetFile.renameFile(renamedPath);
-                        } catch (DatetimeReadException e) {
-                            System.out.println(ansi().fgBrightRed().a(e.getMessage()).reset());
-                        }
-                    }
-
-                    case OTHER -> System.out.println(ansi().fgBrightCyan().a("Skipped").reset());
+                    targetFile.renameFile(renamedPath);
+                } catch (DatetimeReadException | UnsupportedFileTypeException e) {
+                    System.out.println(ansi().fgBrightRed().a(e.getMessage()).reset());
                 }
             });
         } catch (IOException e) {
