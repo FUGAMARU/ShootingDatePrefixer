@@ -34,7 +34,9 @@ public class Main {
         try (Stream<Path> paths = Files.walk(targetDir)) {
             paths.filter(path -> !Files.isDirectory((path))).forEach(path -> {
                 System.out.println("\n" + path);
-                FileType fileType = FileUtil.getFileType(path);
+                FileUtil file = new FileUtil(path);
+
+                FileType fileType = file.getFileType();
 
                 if (fileType == FileType.OTHER) {
                     System.out.print(ansi().fgBrightCyan().a("Skipped").reset());
@@ -43,16 +45,12 @@ public class Main {
 
                 if (fileType == FileType.PICTURE || fileType == FileType.VIDEO) {
                     Optional<Date> shootingDate = ExifUtil.getShootingDate(fileType, path);
+                    
                     if (shootingDate.isPresent()) {
                         String prefix = new SimpleDateFormat("yyyy_MM_dd").format(shootingDate.get());
                         Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
 
-                        try {
-                            Files.move(path, renamedPath);
-                            System.out.print(ansi().a("Renamed -> ").fgBrightGreen().a(renamedPath).reset());
-                        } catch (IOException e) {
-                            System.out.println(ansi().fgBrightRed().a("Error occurred while renaming").reset());
-                        }
+                        file.renameFile(renamedPath);
                     }
                 }
             });
