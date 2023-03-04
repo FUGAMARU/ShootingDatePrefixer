@@ -1,6 +1,7 @@
 package com.fugamaru.sdp;
 
 import com.fugamaru.sdp.enums.FileType;
+import com.fugamaru.sdp.exceptions.DatetimeReadException;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -38,20 +38,21 @@ public class Main {
 
                 FileType fileType = file.getFileType();
 
-                if (fileType == FileType.OTHER) {
-                    System.out.print(ansi().fgBrightCyan().a("Skipped").reset());
-                    return;
-                }
+                switch (fileType) {
+                    case PICTURE, VIDEO -> {
+                        try {
+                            Date shootingDate = ExifUtil.getShootingDate(file);
 
-                if (fileType == FileType.PICTURE || fileType == FileType.VIDEO) {
-                    Optional<Date> shootingDate = ExifUtil.getShootingDate(fileType, path);
-                    
-                    if (shootingDate.isPresent()) {
-                        String prefix = new SimpleDateFormat("yyyy_MM_dd").format(shootingDate.get());
-                        Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
+                            String prefix = new SimpleDateFormat("yyyy_MM_dd").format(shootingDate);
+                            Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
 
-                        file.renameFile(renamedPath);
+                            file.renameFile(renamedPath);
+                        } catch (DatetimeReadException e) {
+                            System.out.println(ansi().fgBrightRed().a(e.getMessage()).reset());
+                        }
                     }
+
+                    case OTHER -> System.out.println(ansi().fgBrightCyan().a("Skipped").reset());
                 }
             });
         } catch (IOException e) {

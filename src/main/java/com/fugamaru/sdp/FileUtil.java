@@ -17,6 +17,10 @@ public class FileUtil {
         this.path = path;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
     /**
      * ファイルタイプを取得する
      *
@@ -49,7 +53,7 @@ public class FileUtil {
     public void renameFile(Path to) {
         try {
             Files.move(this.path, to);
-            System.out.print(ansi().a("Renamed -> ").fgBrightGreen().a(to).reset());
+            System.out.println(ansi().a("Renamed -> ").fgBrightGreen().a(to).reset());
         } catch (IOException e) {
             System.out.println(ansi().fgBrightRed().a("An error occurred while renaming").reset());
         }

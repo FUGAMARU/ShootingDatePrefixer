@@ -5,6 +5,7 @@ package com.fugamaru.sdp.enums;
  */
 public enum TagType {
     PICTURE_CREATION_DATETIME(306),
+    PICTURE_ORIGINAL_CREATION_DATETIME(36867),
     VIDEO_CREATION_DATETIME(256);
 
     private final int tagType;
@@ -14,22 +15,11 @@ public enum TagType {
     }
 
     /**
-     * ファイルタイプからタグタイプを取得する
+     * タグタイプを取得する
      *
-     * @param fileType ファイルタイプ
-     * @return タグタイプ (画像・動画以外は0)
+     * @return タグタイプ
      */
-    public static int getTagTypeFromFileType(FileType fileType) {
-        switch (fileType) {
-            case PICTURE -> {
-                return PICTURE_CREATION_DATETIME.tagType;
-            }
-            case VIDEO -> {
-                return VIDEO_CREATION_DATETIME.tagType;
-            }
-            default -> {
-                return 0;
-            }
-        }
+    public int getTagType() {
+        return tagType;
     }
 }
