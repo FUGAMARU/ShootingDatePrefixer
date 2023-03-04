@@ -11,7 +11,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c6d7fef5-679d-40ab-b9e7-cf6d52127db4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/ExifUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/ExifUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/FileUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/FileUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

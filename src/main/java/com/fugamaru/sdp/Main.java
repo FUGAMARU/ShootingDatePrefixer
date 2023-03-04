@@ -8,10 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -59,7 +57,8 @@ public class Main {
                 }
             });
         } catch (IOException e) {
-            System.out.println(ansi().fgBrightRed().a("Error occurred while working with the file").reset());
+            System.out.println(ansi().fgBrightRed().a("Error occurred while working with the file"));
+            System.out.println(ansi().a(e.getMessage()).reset());
         }
     }
 }

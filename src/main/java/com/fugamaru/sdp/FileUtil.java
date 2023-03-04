@@ -41,6 +41,7 @@ public class FileUtil {
             return FileType.OTHER;
         } catch (IOException e) {
             System.out.println(ansi().fgBrightRed().a("Failed to retrieve file type").reset());
+            System.out.println(ansi().a(e.getMessage()).reset());
             return FileType.OTHER;
         }
     }
@@ -55,7 +56,8 @@ public class FileUtil {
             Files.move(this.path, to);
             System.out.println(ansi().a("Renamed -> ").fgBrightGreen().a(to).reset());
         } catch (IOException e) {
-            System.out.println(ansi().fgBrightRed().a("An error occurred while renaming").reset());
+            System.out.println(ansi().fgBrightRed().a("An error occurred while renaming"));
+            System.out.println(ansi().a(e.getMessage()).reset());
         }
     }
 }
