@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.stream.Stream;
@@ -41,9 +43,10 @@ public class Main {
                 switch (fileType) {
                     case PICTURE, VIDEO -> {
                         try {
-                            Date shootingDate = ExifUtil.getShootingDate(file);
+                            LocalDate shootingDate = ExifUtil.getShootingDate(file);
 
-                            String prefix = new SimpleDateFormat("yyyy_MM_dd").format(shootingDate);
+                            assert shootingDate != null;
+                            String prefix = shootingDate.format(DateTimeFormatter.ofPattern("yyyy_MM_dd"));
                             Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
 
                             file.renameFile(renamedPath);

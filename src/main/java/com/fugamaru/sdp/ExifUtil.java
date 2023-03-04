@@ -4,17 +4,13 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.fugamaru.sdp.enums.FileType;
 import com.fugamaru.sdp.enums.TagType;
 import com.fugamaru.sdp.exceptions.DatetimeReadException;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Stream;
-
-import static com.fugamaru.sdp.enums.FileType.PICTURE;
-import static com.fugamaru.sdp.enums.FileType.VIDEO;
 
 public class ExifUtil {
     /**
@@ -24,7 +20,7 @@ public class ExifUtil {
      * @return 撮影日時
      * @throws DatetimeReadException DatetimeReadException
      */
-    public static Date getShootingDate(FileUtil file) throws DatetimeReadException {
+    public static LocalDate getShootingDate(FileUtil file) throws DatetimeReadException {
         String exceptionMessage = "No metadata existed for the shooting date: " + file.getPath(); //撮影日時に関するメタデーターが存在しない場合に独自例外に投げるメッセージ
 
         try {
@@ -43,14 +39,15 @@ public class ExifUtil {
 
                     Optional<Date> shootingDate1 = Optional.ofNullable(validDir.get().getDate(TagType.PICTURE_CREATION_DATETIME.getTagType(), TimeZone.getDefault()));
                     Optional<Date> shootingDate2 = Optional.ofNullable(validDir.get().getDate(TagType.PICTURE_ORIGINAL_CREATION_DATETIME.getTagType(), TimeZone.getDefault()));
-                    
-                    return shootingDate1.orElseGet(() -> {
+
+                    Date shootingDate = shootingDate1.orElseGet(() -> {
                         try {
                             return shootingDate2.orElseThrow(() -> new DatetimeReadException(exceptionMessage));
                         } catch (DatetimeReadException e) {
                             throw new RuntimeException(e);
                         }
                     });
+                    return LocalDate.ofInstant(shootingDate.toInstant(), ZoneId.systemDefault());
                 }
 
                 case VIDEO -> {
@@ -58,7 +55,8 @@ public class ExifUtil {
 
                     Directory usableDir = validDir.orElseThrow(() -> new DatetimeReadException((exceptionMessage)));
 
-                    return usableDir.getDate(TagType.VIDEO_CREATION_DATETIME.getTagType(), TimeZone.getDefault());
+                    Date shootingDate = usableDir.getDate(TagType.VIDEO_CREATION_DATETIME.getTagType(), TimeZone.getDefault());
+                    return LocalDate.ofInstant(shootingDate.toInstant(), ZoneId.systemDefault());
                 }
 
                 default -> {
