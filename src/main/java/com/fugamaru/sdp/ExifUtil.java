@@ -16,20 +16,20 @@ public class ExifUtil {
     /**
      * 画像・動画ファイルの撮影日時を取得する
      *
-     * @param file 対象ファイル
+     * @param targetFile 対象ファイル
      * @return 撮影日時
      * @throws DatetimeReadException DatetimeReadException
      */
-    public static LocalDate getShootingDate(FileUtil file) throws DatetimeReadException {
-        String exceptionMessage = "No valid metadata existed for the shooting date: " + file.getPath(); //撮影日時に関するメタデーターが存在しない場合に独自例外に投げるメッセージ
+    public static LocalDate getShootingDate(TargetFile targetFile) throws DatetimeReadException {
+        String exceptionMessage = "No valid metadata existed for the shooting date: " + targetFile.getPath(); //撮影日時に関するメタデーターが存在しない場合に独自例外に投げるメッセージ
 
         try {
-            Metadata metadata = ImageMetadataReader.readMetadata(file.getPath().toFile());
+            Metadata metadata = ImageMetadataReader.readMetadata(targetFile.getPath().toFile());
 
             List<Directory> dirs = new ArrayList<>();
             metadata.getDirectories().iterator().forEachRemaining(dirs::add);
 
-            switch (file.getFileType()) {
+            switch (targetFile.getFileType()) {
                 case PICTURE -> {
                     Optional<Directory> validDir = dirs.stream().filter(dir -> dir.containsTag(TagType.PICTURE_CREATION_DATETIME.getTagType()) || dir.containsTag(TagType.PICTURE_ORIGINAL_CREATION_DATETIME.getTagType())).findFirst();
 
@@ -39,7 +39,7 @@ public class ExifUtil {
 
                     Optional<Date> shootingDate1 = Optional.ofNullable(validDir.get().getDate(TagType.PICTURE_CREATION_DATETIME.getTagType(), TimeZone.getDefault()));
                     Optional<Date> shootingDate2 = Optional.ofNullable(validDir.get().getDate(TagType.PICTURE_ORIGINAL_CREATION_DATETIME.getTagType(), TimeZone.getDefault()));
-                    
+
                     Date shootingDate = shootingDate1.orElseGet(() -> shootingDate2.orElseThrow(RuntimeException::new));
 
                     if (isInitialDatetime(shootingDate)) {

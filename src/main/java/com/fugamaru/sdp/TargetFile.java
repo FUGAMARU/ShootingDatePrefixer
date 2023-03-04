@@ -9,11 +9,11 @@ import java.nio.file.Path;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
-public class FileUtil {
+public class TargetFile {
     private final Path path;
     private final Tika tika = new Tika();
 
-    public FileUtil(Path path) {
+    public TargetFile(Path path) {
         this.path = path;
     }
 

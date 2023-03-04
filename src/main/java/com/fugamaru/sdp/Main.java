@@ -34,20 +34,20 @@ public class Main {
         try (Stream<Path> paths = Files.walk(targetDir)) {
             paths.filter(path -> !Files.isDirectory((path))).forEach(path -> {
                 System.out.println("\n" + path);
-                FileUtil file = new FileUtil(path);
+                TargetFile targetFile = new TargetFile(path);
 
-                FileType fileType = file.getFileType();
+                FileType fileType = targetFile.getFileType();
 
                 switch (fileType) {
                     case PICTURE, VIDEO -> {
                         try {
-                            LocalDate shootingDate = ExifUtil.getShootingDate(file);
+                            LocalDate shootingDate = ExifUtil.getShootingDate(targetFile);
 
                             assert shootingDate != null;
                             String prefix = shootingDate.format(DateTimeFormatter.ofPattern("yyyy_MM_dd"));
                             Path renamedPath = path.resolveSibling(prefix + "_" + path.getFileName());
 
-                            file.renameFile(renamedPath);
+                            targetFile.renameFile(renamedPath);
                         } catch (DatetimeReadException e) {
                             System.out.println(ansi().fgBrightRed().a(e.getMessage()).reset());
                         }
