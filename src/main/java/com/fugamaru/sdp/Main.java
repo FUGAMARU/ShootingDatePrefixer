@@ -1,8 +1,11 @@
 package com.fugamaru.sdp;
 
+import com.fugamaru.sdp.beans.ExecutionArgumentsBean;
 import com.fugamaru.sdp.exceptions.DatetimeReadException;
 import com.fugamaru.sdp.exceptions.UnsupportedFileTypeException;
 import org.fusesource.jansi.AnsiConsole;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 import java.util.stream.Stream;
 
 import static java.lang.System.exit;
@@ -20,14 +22,11 @@ public class Main {
     public static void main(String[] args) {
         AnsiConsole.systemInstall();
 
-        System.out.print(ansi().fgCyan().a("Type the path of the target directory > ").reset());
-
-        Scanner scanner = new Scanner(System.in);
-        Path targetDir = Paths.get(scanner.nextLine());
-        scanner.close();
-
-        if (!Files.isDirectory(targetDir) || Files.notExists(targetDir)) {
-            System.out.println(ansi().fgBrightRed().a("The specified path is not a directory or does not exist.").reset());
+        Path targetDir = null;
+        try {
+            targetDir = getValidPath(args);
+        } catch (IllegalArgumentException e) {
+            System.err.println(ansi().fgBrightRed().a(e.getMessage()).reset());
             exit(1);
         }
 
@@ -45,12 +44,41 @@ public class Main {
 
                     targetFile.renameFile(renamedPath);
                 } catch (DatetimeReadException | UnsupportedFileTypeException e) {
-                    System.out.println(ansi().fgBrightRed().a(e.getMessage()).reset());
+                    System.err.println(ansi().fgBrightRed().a(e.getMessage()).reset());
                 }
             });
         } catch (IOException e) {
-            System.out.println(ansi().fgBrightRed().a("Error occurred while working with the file"));
-            System.out.println(ansi().a(e.getMessage()).reset());
+            System.err.println(ansi().fgBrightRed().a("Error occurred while working with the file"));
+            System.err.println(ansi().a(e.getMessage()).reset());
         }
+    }
+
+    /**
+     * 有効な処理対象フォルダーのパスを取得する
+     *
+     * @return 処理対象フォルダーのパス
+     * @throws IllegalArgumentException IllegalArgumentException
+     */
+    private static Path getValidPath(String[] args) throws IllegalArgumentException {
+        ExecutionArgumentsBean arguments = new ExecutionArgumentsBean();
+        CmdLineParser parser = new CmdLineParser(arguments);
+
+        try {
+            parser.parseArgument(args);
+        } catch (CmdLineException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+        if (arguments.getArguments().size() != 1) {
+            throw new IllegalArgumentException("Incorrect number of execution arguments.");
+        }
+
+        Path specifiedPath = Paths.get(arguments.getArguments().get(0));
+
+        if (!Files.isDirectory(specifiedPath) || Files.notExists(specifiedPath)) {
+            throw new IllegalArgumentException("The specified path is not a directory or does not exist.");
+        }
+
+        return specifiedPath;
     }
 }

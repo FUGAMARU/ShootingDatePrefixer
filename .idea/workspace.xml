@@ -10,10 +10,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6d7fef5-679d-40ab-b9e7-cf6d52127db4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/exceptions/UnsupportedFileTypeException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/beans/ExecutionArgumentsBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/ShootingDatePrefixer_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/ShootingDatePrefixer_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/ExifUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/ExifUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/TargetFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/TargetFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/enums/TagType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/fugamaru/sdp/enums/TagType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +64,7 @@
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.fugamaru.sdp.Main" />
       <module name="ShootingDatePrefixer.main" />
-      <option name="PROGRAM_PARAMETERS" value="-encoding UTF-8 -charset UTF-8" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\Desktop\complete&quot;" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.fugamaru.sdp.*" />

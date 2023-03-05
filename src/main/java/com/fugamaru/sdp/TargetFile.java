@@ -1,6 +1,8 @@
 package com.fugamaru.sdp;
 
 import com.fugamaru.sdp.enums.FileType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.tika.Tika;
 
 import java.io.IOException;
@@ -9,17 +11,11 @@ import java.nio.file.Path;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
+@AllArgsConstructor
 public class TargetFile {
+    @Getter
     private final Path path;
     private final Tika tika = new Tika();
-
-    public TargetFile(Path path) {
-        this.path = path;
-    }
-
-    public Path getPath() {
-        return path;
-    }
 
     /**
      * ファイルタイプを取得する
@@ -40,8 +36,8 @@ public class TargetFile {
 
             return FileType.OTHER;
         } catch (IOException e) {
-            System.out.println(ansi().fgBrightRed().a("Failed to retrieve file type").reset());
-            System.out.println(ansi().a(e.getMessage()).reset());
+            System.err.println(ansi().fgBrightRed().a("Failed to retrieve file type").reset());
+            System.err.println(ansi().a(e.getMessage()).reset());
             return FileType.OTHER;
         }
     }
@@ -56,8 +52,8 @@ public class TargetFile {
             Files.move(this.path, to);
             System.out.println(ansi().a("Renamed -> ").fgBrightGreen().a(to).reset());
         } catch (IOException e) {
-            System.out.println(ansi().fgBrightRed().a("An error occurred while renaming"));
-            System.out.println(ansi().a(e.getMessage()).reset());
+            System.err.println(ansi().fgBrightRed().a("An error occurred while renaming"));
+            System.err.println(ansi().a(e.getMessage()).reset());
         }
     }
 }

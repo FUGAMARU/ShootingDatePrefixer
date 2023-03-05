@@ -10,12 +10,15 @@ repositories {
 }
 
 dependencies {
+    testImplementation 'org.slf4j:slf4j-simple:2.0.6'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
     implementation 'org.apache.tika:tika-core:2.7.0'
     implementation 'org.fusesource.jansi:jansi:2.4.0'
-    testImplementation 'org.slf4j:slf4j-simple:2.0.6'
+    implementation 'args4j:args4j:2.33'
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
 }
 
 test {
