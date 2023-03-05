@@ -19,6 +19,8 @@ import static java.lang.System.exit;
 import static org.fusesource.jansi.Ansi.*;
 
 public class Main {
+    private static final ExecutionArgumentsBean arguments = new ExecutionArgumentsBean();
+
     public static void main(String[] args) {
         AnsiConsole.systemInstall();
 
@@ -36,7 +38,8 @@ public class Main {
                 TargetFile targetFile = new TargetFile(path);
 
                 try {
-                    LocalDate shootingDate = ExifUtil.getShootingDate(targetFile);
+                    ExifUtil exifUtil = new ExifUtil(arguments.isModFlag());
+                    LocalDate shootingDate = exifUtil.getShootingDate(targetFile);
                     assert shootingDate != null;
 
                     String prefix = shootingDate.format(DateTimeFormatter.ofPattern("yyyy_MM_dd"));
@@ -60,7 +63,6 @@ public class Main {
      * @throws IllegalArgumentException IllegalArgumentException
      */
     private static Path getValidPath(String[] args) throws IllegalArgumentException {
-        ExecutionArgumentsBean arguments = new ExecutionArgumentsBean();
         CmdLineParser parser = new CmdLineParser(arguments);
 
         try {

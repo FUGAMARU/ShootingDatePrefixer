@@ -14,5 +14,4 @@ public class ExecutionArgumentsBean {
     private boolean modFlag;
     @Argument
     private ArrayList<String> arguments = new ArrayList<>();
-
 }
